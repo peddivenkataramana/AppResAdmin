@@ -2,7 +2,7 @@
   "name": "AppResAdmin",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/peddivenkataramana/AppResAdmin.git",
+  "homepage": "https://peddivenkataramana.github.io/AppResAdmin/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
