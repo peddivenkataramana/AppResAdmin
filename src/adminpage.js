@@ -26,20 +26,7 @@ const AdminPage = () => {
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchOrders();
-    }, 5000); // Fetch every 5 seconds
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [orders]);
-
-  // Handle new order alert dismissal
-  const handleNewOrderAlert = () => {
-    setNewOrderAlert(false);
-  };
-
-  // Handle marking order as "completed" or "pending"
+  // Mark order as completed or pending
   const handleMark = async (orderId) => {
     try {
       const orderToUpdate = orders.find((order) => order._id === orderId);
@@ -51,19 +38,18 @@ const AdminPage = () => {
         {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json", // Ensure Content-Type is set correctly
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ status: newStatus }), // Send updated status
         }
       );
 
-      // Check if the response is okay
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error(`Failed to update order status: ${errorMessage}`);
       }
 
-      // Update the order status locally
+      // Update order status locally
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order._id === orderId ? { ...order, status: newStatus } : order
@@ -74,9 +60,22 @@ const AdminPage = () => {
     }
   };
 
+  // Handle the new order alert dismissal
+  const handleNewOrderAlert = () => {
+    setNewOrderAlert(false);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 5000); // Fetch every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [orders]);
+
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8 text-center">
+      <h1 className="text-4xl font-semibold mb-8 text-center text-indigo-600">
         Restaurant Admin - Orders
       </h1>
 
@@ -86,11 +85,13 @@ const AdminPage = () => {
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onClick={handleNewOrderAlert}
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">New Order Received!</h3>
+          <div className="bg-white p-8 rounded-lg shadow-xl">
+            <h3 className="text-2xl font-semibold mb-6 text-center">
+              New Order Received!
+            </h3>
             <button
               onClick={handleNewOrderAlert}
-              className="bg-blue-500 text-white px-6 py-3 rounded-md"
+              className="bg-indigo-500 text-white px-8 py-3 rounded-md"
             >
               OK
             </button>
@@ -100,92 +101,69 @@ const AdminPage = () => {
 
       {/* Orders Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Orders</h2>
-        <div className="overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="min-w-full table-auto">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm">Order Info</th>
-                <th className="px-6 py-3 text-left text-sm">Order Details</th>
-                <th className="px-6 py-3 text-left text-sm">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr
-                  key={order._id}
-                  className={`border-b ${
-                    order.status === "completed" ? "bg-green-100" : ""
-                  }`}
-                >
-                  <td className="px-6 py-4 text-sm">
-                    <div
-                      className={
-                        order.status === "completed"
-                          ? "line-through text-gray-500"
-                          : ""
-                      }
-                    >
-                      <strong>Order ID:</strong> {order._id}
+        <h2 className="text-3xl font-semibold mb-6">Recent Orders</h2>
+        <div className="space-y-6">
+          {orders.map((order) => (
+            <div
+              key={order._id}
+              className={`bg-white p-6 rounded-lg shadow-md border ${
+                order.status === "completed"
+                  ? "border-green-500"
+                  : "border-gray-300"
+              }`}
+            >
+              <div className="flex justify-between items-start">
+                {/* Left Side (Order Info) */}
+                <div className="flex flex-col space-y-2 w-1/2 text-sm">
+                  <div className="text-lg font-medium text-indigo-700">
+                    Order ID: {order._id}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Customer: {order.customerName}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Phone: {order.customerPhone}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Order Date: {new Date(order.orderDate).toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-800 font-semibold mt-2">
+                    Total Bill: ${order.totalPrice?.toFixed(2)}
+                  </div>
+                </div>
+
+                {/* Right Side (Ordered Items & Action) */}
+                <div className="w-1/2 pl-8">
+                  {/* Ordered Items */}
+                  <div className="mb-4">
+                    <div className="text-xl font-semibold text-gray-800 mb-2">
+                      Ordered Items:
                     </div>
-                    <div
-                      className={
-                        order.status === "completed"
-                          ? "line-through text-gray-500"
-                          : ""
-                      }
-                    >
-                      <strong>Customer:</strong> {order.customerName}
-                    </div>
-                    <div
-                      className={
-                        order.status === "completed"
-                          ? "line-through text-gray-500"
-                          : ""
-                      }
-                    >
-                      <strong>Phone:</strong> {order.customerPhone}
-                    </div>
-                    <div
-                      className={
-                        order.status === "completed"
-                          ? "line-through text-gray-500"
-                          : ""
-                      }
-                    >
-                      <strong>Order Date:</strong>{" "}
-                      {new Date(order.orderDate).toLocaleString()}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
                     {order.items.map((item, index) => (
-                      <div
-                        key={index}
-                        className={
-                          order.status === "completed"
-                            ? "line-through text-gray-500"
-                            : ""
-                        }
-                      >
+                      <div key={index} className="text-lg text-gray-700 mb-2">
                         <strong>{item.name}</strong> - Spice Level:{" "}
                         {item.spiceLevel} (Qty: {item.quantity})
                       </div>
                     ))}
-                  </td>
-                  <td className="px-6 py-4 text-sm">
+                  </div>
+
+                  {/* Action Button */}
+                  <div className="mt-4 flex justify-end">
                     <button
                       onClick={() => handleMark(order._id)}
                       className={`bg-${
-                        order.status === "completed" ? "red" : "blue"
-                      }-500 text-white px-4 py-2 rounded-md text-xs`}
+                        order.status === "completed" ? "red" : "green"
+                      }-500 text-white px-6 py-2 rounded-md text-sm`}
                     >
-                      {order.status === "completed" ? "Unmark" : "Mark"}
+                      {order.status === "completed"
+                        ? "Unmark"
+                        : "Mark as Completed"}
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>
