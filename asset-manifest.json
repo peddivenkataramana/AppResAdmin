@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/AppResAdmin/static/css/main.079bc544.css",
-    "main.js": "/AppResAdmin/static/js/main.0ce012a8.js",
+    "main.css": "/AppResAdmin/static/css/main.ee77f610.css",
+    "main.js": "/AppResAdmin/static/js/main.73ae5ac6.js",
     "index.html": "/AppResAdmin/index.html",
-    "main.079bc544.css.map": "/AppResAdmin/static/css/main.079bc544.css.map",
-    "main.0ce012a8.js.map": "/AppResAdmin/static/js/main.0ce012a8.js.map"
+    "main.ee77f610.css.map": "/AppResAdmin/static/css/main.ee77f610.css.map",
+    "main.73ae5ac6.js.map": "/AppResAdmin/static/js/main.73ae5ac6.js.map"
   },
   "entrypoints": [
-    "static/css/main.079bc544.css",
-    "static/js/main.0ce012a8.js"
+    "static/css/main.ee77f610.css",
+    "static/js/main.73ae5ac6.js"
   ]
 }
