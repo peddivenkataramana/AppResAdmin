@@ -18,8 +18,13 @@ const AdminPage = () => {
         setNewOrderAlert(true);
       }
 
-      // Update orders state
-      setOrders(data);
+      // Reverse the order to have the most recent first
+      setOrders((prevOrders) => {
+        const updatedOrders = [...data];
+        updatedOrders.reverse(); // Reverse the order list
+        return updatedOrders;
+      });
+
       setPrevOrdersCount(data.length);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -118,16 +123,17 @@ const AdminPage = () => {
                   <div className="text-lg font-medium text-indigo-700">
                     Order ID: {order._id}
                   </div>
-                  <div className="text-xs text-gray-600">
-                    Customer: {order.customerName}
+                  <div className="text-sm text-gray-600">
+                    Customer Name: {order.customerName}
                   </div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-sm text-gray-600">
                     Phone: {order.customerPhone}
                   </div>
-                  <div className="text-xs text-gray-600">
-                    Order Date: {new Date(order.orderDate).toLocaleString()}
+                  <div className="text-sm text-gray-600">
+                    Order Date & Time:{" "}
+                    {new Date(order.orderDate).toLocaleString()}
                   </div>
-                  <div className="text-sm text-gray-800 font-semibold mt-2">
+                  <div className="text-lg text-gray-800 font-semibold mt-2">
                     Total Bill: ${order.totalPrice?.toFixed(2)}
                   </div>
                 </div>
@@ -141,8 +147,13 @@ const AdminPage = () => {
                     </div>
                     {order.items.map((item, index) => (
                       <div key={index} className="text-lg text-gray-700 mb-2">
-                        <strong>{item.name}</strong> - Spice Level:{" "}
-                        {item.spiceLevel} (Qty: {item.quantity})
+                        <strong>{item.name}</strong>
+                        {item.spiceLevel && (
+                          <span className="ml-2 text-sm text-gray-500">
+                            - Spice Level: {item.spiceLevel}
+                          </span>
+                        )}{" "}
+                        (Qty: {item.quantity})
                       </div>
                     ))}
                   </div>
